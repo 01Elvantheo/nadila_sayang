@@ -187,60 +187,100 @@
       box-shadow: 0 12px 26px rgba(255,59,122,.22);
     }
 
-    /* ===== NEW Layer 4: SURAT ONLY ===== */
+    /* ===== Layer 4: SURAT (FIX: scroll cuma di isi surat) ===== */
     .wideCard{ width:min(860px, 96%); text-align:left; padding-bottom: 78px; }
-    #layer4.scrollable .wideCard{ max-height: calc(100vh - 28px); }
+
+    /* PENTING: layer4 TIDAK pakai .scrollable, jadi card-nya yang dibatesin tinggi */
+    #layer4 .wideCard{
+      height: auto;
+      max-height: calc(100dvh - 24px);
+      padding: 16px 14px 72px;
+      overflow: hidden;
+
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    @supports not (height: 100dvh){
+      #layer4 .wideCard{ max-height: calc(100vh - 24px); }
+    }
 
     .wideHead{
       display:flex; align-items:flex-end; justify-content:space-between;
-      gap:12px; flex-wrap:wrap; margin-bottom: 12px;
+      gap:12px; flex-wrap:wrap;
+      margin-bottom: 0;
     }
     .wideTitle{
       font-family:"Baloo 2", system-ui;
       margin:0;
-      font-size: 32px;
+      font-size: clamp(22px, 4.6vw, 32px);
       font-weight: 900;
       color: var(--accent);
       text-shadow: 0 2px 0 rgba(255,255,255,.7);
       display:flex; align-items:center; gap:8px;
+      line-height: 1.05;
     }
 
     .panel{
       border-radius: 22px;
       background: rgba(255,59,122,.06);
       border: 1px solid rgba(255,59,122,.14);
-      padding: 14px;
+      padding: 12px;
+
+      /* panel mengisi sisa tinggi card */
+      flex: 0 0 auto;
+      min-height: 0;
+      max-height: calc(100dvh - 180px);
+      height: auto;
+      overflow: visible;
     }
 
     .letterHeader{
       display:flex; align-items:center; justify-content:center;
       gap:10px; margin: 2px 0 6px;
     }
-    .letterHeader img{ width:38px; height:38px; object-fit:contain; display:block; }
+    .letterHeader img{ width:34px; height:34px; object-fit:contain; display:block; }
     .letterHeaderTitle{
       font-family:"Baloo 2", system-ui;
       margin:0;
-      font-size: 22px;
+      font-size: clamp(18px, 4.3vw, 22px);
       font-weight: 900;
       color: rgba(43,10,27,.92);
       text-align:center;
     }
 
+    /* Letter panel jadi flex column supaya box surat bisa “flex:1” */
+    #letterPanel.letterPanelVisible{
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      overflow: hidden;
+    }
+
+    /* area konten surat dibuat scroll internal (INI YANG SCROLL) */
     .letterBox{
       border-radius: 18px;
       padding: 10px 14px 14px;
       background: rgba(255,255,255,.65);
       border: 1px dashed rgba(255,59,122,.30);
-      min-height: 240px;
       white-space:pre-wrap;
       line-height:1.35;
       color: rgba(43,10,27,.92);
       font-weight: 800;
       font-family:"Baloo 2", system-ui;
-      font-size: 15px;
-    }
-    @media (max-width: 520px){
-      .letterBox{ min-height: 240px; }
+      font-size: 14px;
+
+      /* FIX utama */
+      flex: none;
+      height: clamp(220px, 36svh, 360px);
+      overflow-y:auto;
+      -webkit-overflow-scrolling: touch;
+
+      /* biar scroll ga “tembus” ke luar */
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      scrollbar-gutter: stable;
     }
 
     .navRow{
@@ -248,6 +288,7 @@
       justify-content:space-between; align-items:center;
       margin-top: 10px;
       font-family:"Baloo 2", system-ui;
+      flex: 0 0 auto;
     }
 
     .cursor{
@@ -263,8 +304,9 @@
     .envelopeStage{
       display:grid;
       justify-items:center;
-      gap: 12px;
-      padding: 8px 0 12px;
+      gap: 10px;
+      padding: 10px 0 10px;
+      overflow: visible;
     }
     .envelopeHint{
       font-family:"Baloo 2", system-ui;
@@ -275,18 +317,30 @@
       margin: 0;
     }
     .envelopeWrap{
-      width: min(380px, 92%);
-      height: 190px;
+      width: min(340px, 92%);
+      height: 220px;
+      padding-top: 26px;
+      box-sizing: border-box;
       position: relative;
       border-radius: 18px;
       display:grid;
       place-items:center;
+      overflow: hidden;
     }
     .env{
-      width: min(340px, 92%);
-      height: 170px;
+      width: 100%;
+      height: 168px;
       position: relative;
+      transform: translateY(8px);
       filter: drop-shadow(0 14px 22px rgba(0,0,0,.12));
+    }
+    .env.open{
+      animation: envShrink .25s ease forwards;
+    }
+
+    @keyframes envShrink{
+      0%{ transform: scale(1); }
+      100%{ transform: scale(.94); }
     }
     .env .back{
       position:absolute; inset:0;
@@ -327,13 +381,13 @@
     .env .flap{
       position:absolute;
       left: 0; right:0;
-      top: -2px;
+      top: 0;
       height: 54%;
       background: linear-gradient(180deg, rgba(255,79,154,.32), rgba(255,79,154,.12));
       clip-path: polygon(0 0, 100% 0, 50% 100%);
       border-top-left-radius: 18px;
       border-top-right-radius: 18px;
-      transform-origin: top;
+      transform-origin: top center;
       transform: rotateX(0deg);
       border-left: 2px solid rgba(255,59,122,.22);
       border-right: 2px solid rgba(255,59,122,.22);
@@ -358,40 +412,37 @@
     .env.open .flap{ animation: flapOpen .55s ease forwards; }
     .env.open .paper{ animation: paperUp .75s ease .15s forwards; }
 
-    @keyframes flapOpen{
-      0%{ transform: rotateX(0deg); }
-      100%{ transform: rotateX(170deg); }
-    }
-    @keyframes paperUp{
-      0%{ height: 0; }
-      100%{ height: 135px; }
-    }
+    @keyframes flapOpen{ 0%{ transform: rotateX(0deg); } 100%{ transform: rotateX(120deg); } }
+    @keyframes paperUp{ 0%{ height: 0; } 100%{ height: 126px; } }
 
     .letterPanelHidden{ display:none; }
     .letterPanelVisible{ display:block; }
 
-    /* ===== NEW Layer 5: FOTO SCROLL ===== */
-    #layer5.scrollable .wideCard{ max-height: calc(100vh - 28px); }
-
-    .photoScroll{
-      max-height: 66vh;
-      overflow-y:auto;
-      -webkit-overflow-scrolling: touch;
-      padding-right: 4px;
-      margin-top: 10px;
+    /* ===== Layer 5: FOTO SLIDER (scrollable wrapper) ===== */
+    #layer5.scrollable .wideCard{
+      max-height: calc(100svh - 24px);
+      padding: 16px 14px 72px;
+      overflow: hidden;
     }
-    @media (max-width: 520px){
-      .photoScroll{ max-height: 62vh; }
+    @supports not (height: 100svh){
+      #layer5.scrollable .wideCard{ max-height: calc(100vh - 24px); }
     }
 
-    .photoItem{
-      background: rgba(255,255,255,.68);
-      border: 1px solid rgba(255,59,122,.16);
+    .photoFrame{
+      width:100%;
+      height: clamp(360px, 52svh, 560px);
       border-radius: 18px;
-      padding: 10px;
-      margin-bottom: 12px;
+      overflow:hidden;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,59,122,.18);
       position:relative;
+      display:flex; align-items:center; justify-content:center;
+      padding: 10px;
     }
+    @supports not (height: 100svh){
+      .photoFrame{ height: clamp(360px, 52vh, 560px); }
+    }
+
     .photoBadge{
       position:absolute; left:10px; top:10px;
       background: rgba(0,0,0,.35); color:#fff;
@@ -399,40 +450,69 @@
       font-size: 12px; font-weight: 900;
       backdrop-filter: blur(6px);
       font-family:"Baloo 2", system-ui;
-    }
-    .photoItem img{
-      width:100%;
-      height: clamp(280px, 44vh, 520px);
-      object-fit: contain;
-      background: rgba(255,255,255,.40);
-      border-radius: 14px;
-      display:block;
-      border: 1px solid rgba(255,59,122,.12);
+      z-index: 3;
     }
 
-    /* ===== Layer 6 Songs (old layer 5) ===== */
+    .slideStage{
+      position:relative;
+      width:100%; height:100%;
+      border-radius: 14px;
+      overflow:hidden;
+      background: rgba(255,255,255,.35);
+    }
+    .slideImg{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      object-fit: contain;
+      object-position:center;
+      opacity:0;
+      transform: translateX(18px) scale(.995);
+      transition: opacity .35s ease, transform .35s ease;
+      border-radius: 14px;
+      background: rgba(255,255,255,.35);
+    }
+    .slideImg.show{ opacity:1; transform: translateX(0) scale(1); }
+    .slideImg.hideLeft{ opacity:0; transform: translateX(-18px) scale(.995); }
+
+    .dots{ display:flex; gap:8px; justify-content:center; margin-top: 10px; }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: rgba(255,59,122,.18);
+      border: 1px solid rgba(255,59,122,.22);
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .dot.active{ background: rgba(255,59,122,.90); transform: scale(1.15); }
+
+    /* ===== Layer 6 Songs ===== */
+    #layer6 .card{ overflow: hidden; }
     .sectionTitle{
       font-family:"Baloo 2", system-ui;
-      font-size: 28px;
+      font-size: clamp(22px, 5.2vw, 28px);
       font-weight: 900;
       color: var(--accent);
       margin: 0 0 12px;
       text-align:center;
       text-shadow: 0 2px 0 rgba(255,255,255,.7);
+      line-height:1.1;
     }
     .songList{ display:grid; gap: 14px; margin-top: 10px; }
 
     .songCard{
-      border-radius: 26px;
-      padding: 14px;
+      border-radius: 24px;
+      padding: 12px;
       background: rgba(255,59,122,.06);
       border: 1px solid rgba(255,59,122,.14);
-      display:flex;
+
+      display:grid;
+      grid-template-columns: 86px 1fr auto;
       gap: 12px;
       align-items:center;
+
+      min-width: 0;
     }
     .songArt{
-      width: 96px; height: 76px;
+      width: 86px; height: 72px;
       border-radius: 16px;
       background: rgba(255,255,255,.65);
       border: 1px solid rgba(255,59,122,.18);
@@ -442,7 +522,7 @@
     }
     .songArt img{ width:100%; height:100%; object-fit:contain; display:block; padding:10px; }
 
-    .songMeta{ flex:1; min-width: 120px; }
+    .songMeta{ flex:1; min-width: 0; }
     .songTitle{
       font-family:"Baloo 2", system-ui;
       font-size: 16px;
@@ -450,6 +530,9 @@
       margin: 0;
       color: rgba(43,10,27,.92);
       line-height:1.1;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .songArtist{
       margin: 4px 0 0;
@@ -458,12 +541,16 @@
       font-weight: 900;
       font-style: italic;
       font-family:"Baloo 2", system-ui;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .songActions{
       display:flex;
       flex-direction:column;
       gap:8px;
       align-items:stretch;
+      justify-self:end;
     }
     .miniBtn{
       border-radius: 14px;
@@ -474,8 +561,21 @@
       white-space:nowrap;
       font-family:"Baloo 2", system-ui;
     }
+    @media (max-width: 460px){
+      .songCard{
+        grid-template-columns: 78px 1fr;
+        grid-template-rows: auto auto;
+        align-items:start;
+      }
+      .songActions{
+        grid-column: 1 / -1;
+        flex-direction:row;
+        justify-content:space-between;
+      }
+      .miniBtn{ flex:1; }
+    }
 
-    /* ===== Layer 7 (old layer 6) ===== */
+    /* ===== Layer 7 WHY ===== */
     #layer7.scrollable .card{ max-height: calc(100vh - 28px); }
 
     .whyWrap{ display:grid; gap: 14px; margin-top: 10px; padding-top: 18px; }
@@ -534,22 +634,12 @@
     .pop{ animation: pop .22s ease; }
     @keyframes pop{ from{ transform: scale(.98); } to{ transform: scale(1); } }
 
-    /* ===== Layer 8 (old layer 7) ===== */
+    /* ===== Layer 8 END ===== */
     .endWrap{
       width:min(520px, 96%);
       display:grid;
-      gap: 14px;
       justify-items:center;
-    }
-    .endTitleTop{
-      font-family:"Baloo 2", system-ui;
-      font-size: 36px;
-      font-weight: 900;
-      color: var(--l7Text);
-      text-align:center;
-      text-shadow: 0 2px 0 rgba(255,255,255,.7);
-      line-height:1.1;
-      margin: 0;
+      padding: 14px 0;
     }
     .endCard{
       width:100%;
@@ -557,34 +647,52 @@
       border: 3px solid var(--l7Border);
       border-radius: 34px;
       box-shadow: 0 14px 40px rgba(0,0,0,.18);
-      padding: 26px 22px 76px;
+      padding: 16px 14px 64px;
       position:relative;
       overflow:hidden;
       text-align:center;
+      max-height: calc(100svh - 28px);
+      display:flex;
+      flex-direction:column;
+    }
+    @supports not (height: 100svh){
+      #layer8 .endCard{
+        max-height: calc(100vh - 28px);
+      }
     }
     .endInner{
-      margin: 10px auto 0;
+      margin: 6px auto 0;
       width: 92%;
       border-radius: 26px;
       background: rgba(255,59,122,.06);
       border: 2px solid rgba(255,59,122,.16);
-      padding: 22px 16px;
+      padding: 18px 14px;
+
+      flex: 0 1 auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+      max-height: calc(100svh - 140px);
     }
-    .endHeartBig{ font-size: 44px; margin: 2px 0 10px; }
+    @supports not (height: 100svh){
+      #layer8 .endInner{ max-height: calc(100vh - 140px); }
+    }
+    .endHeartBig{ font-size: 38px; margin: 2px 0 8px; }
     .endMain{
       font-family:"Baloo 2", system-ui;
-      font-size: 44px;
+      font-size: clamp(28px, 7vw, 44px);
       font-weight: 900;
       color: var(--l7Text);
       margin: 0;
-      line-height: 1.0;
+      line-height: 1;
     }
     .endSub{
       font-family:"Baloo 2", system-ui;
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 800;
       color: rgba(255,59,122,.75);
-      margin: 6px 0 16px;
+      margin: 6px 0 12px;
       font-style: italic;
     }
     .heartsRow{
@@ -599,22 +707,22 @@
     }
     .fromLine{
       font-family:"Baloo 2", system-ui;
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 900;
       color: rgba(43,10,27,.78);
       margin: 0;
     }
     .dateLine{
       font-family:"Baloo 2", system-ui;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 800;
       color: rgba(43,10,27,.48);
       margin: 6px 0 0;
     }
     .endBtn{
-      margin-top: 18px;
+      margin-top: 12px;
       width: min(320px, 92%);
-      padding: 14px 18px;
+      padding: 12px 16px;
       border-radius: 999px;
       background: rgba(255,255,255,.92);
       color: var(--l7Text);
@@ -730,8 +838,8 @@
     </div>
   </section>
 
-  <!-- NEW LAYER 4: SURAT (scrollable) -->
-  <section id="layer4" class="layer scrollable">
+  <!-- LAYER 4: SURAT (TIDAK scroll layer, scroll cuma letterBox) -->
+  <section id="layer4" class="layer">
     <div class="card wideCard">
       <div class="wideHead">
         <h2 class="wideTitle">Surat untuk Nadila <span aria-hidden="true">💌</span></h2>
@@ -754,7 +862,7 @@
             </div>
           </div>
           <p class="envelopeHint">Klik “Buka Surat” ya sayangkuu ✨</p>
-          <button id="openLetterBtn" class="primaryBtn" style="width:min(340px,92%); padding:16px 18px; font-size:18px;">
+          <button id="openLetterBtn" class="primaryBtn" style="width:min(340px,92%); padding:14px 18px; font-size:16px;">
             Buka Surat 💗
           </button>
         </div>
@@ -767,7 +875,7 @@
             <img src="love_right.gif" alt="love right">
           </div>
 
-          <div class="letterBox">
+          <div class="letterBox" id="letterBox">
             <span id="typedText"></span><span id="cursor" class="cursor">|</span>
           </div>
 
@@ -786,16 +894,14 @@
 
       <div class="wave" aria-hidden="true">
         <svg viewBox="0 0 1440 220" preserveAspectRatio="none">
-          <path d="M0,110 C240,170 420,60 720,120 C1020,180 1200,90 1440,120 L1440,220 L0,220 Z"
-                fill="rgba(255,126,185,.32)"></path>
-          <path d="M0,130 C260,190 420,80 720,140 C1020,200 1200,110 1440,140 L1440,220 L0,220 Z"
-                fill="rgba(255,79,154,.18)"></path>
+          <path d="M0,110 C240,170 420,60 720,120 C1020,180 1200,90 1440,120 L1440,220 L0,220 Z" fill="rgba(255,126,185,.32)"></path>
+          <path d="M0,130 C260,190 420,80 720,140 C1020,200 1200,110 1440,140 L1440,220 L0,220 Z" fill="rgba(255,79,154,.18)"></path>
         </svg>
       </div>
     </div>
   </section>
 
-  <!-- NEW LAYER 5: FOTO POPUP SCROLL (scrollable) -->
+  <!-- LAYER 5: FOTO SLIDER (scrollable wrapper) -->
   <section id="layer5" class="layer scrollable">
     <div class="card wideCard">
       <div class="wideHead">
@@ -807,46 +913,39 @@
       </div>
 
       <div class="panel">
-        <div style="font-family:'Baloo 2',system-ui; font-weight:900; color:rgba(43,10,27,.62); font-style:italic; text-align:center;">
-          Scroll ke bawah ya sayangkuu 💞
+        <div style="font-family:'Baloo 2',system-ui; font-weight:900; color:rgba(43,10,27,.62); font-style:italic; text-align:center; margin-bottom:10px;">
+          Swipe kiri/kanan ya sayangkuu 💞
         </div>
 
-        <div class="photoScroll">
-          <div class="photoItem">
-            <div class="photoBadge">Foto 1 / 5</div>
-            <img src="foto1.jpg" alt="foto1">
+        <div class="photoFrame" id="photoFrame">
+          <div class="photoBadge" id="photoBadge">Foto 1 / 5</div>
+          <div class="slideStage" id="slideStage">
+            <img id="slideA" class="slideImg show" src="foto1.jpg" alt="foto">
+            <img id="slideB" class="slideImg" src="foto2.jpg" alt="foto">
           </div>
-          <div class="photoItem">
-            <div class="photoBadge">Foto 2 / 5</div>
-            <img src="foto2.jpg" alt="foto2">
+        </div>
+
+        <div class="dots" id="photoDots"></div>
+
+        <div class="navRow" style="margin-top:12px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button id="photoPrev" class="ghostBtn">⬅️ Prev</button>
+            <button id="photoNext" class="ghostBtn">Next ➡️</button>
           </div>
-          <div class="photoItem">
-            <div class="photoBadge">Foto 3 / 5</div>
-            <img src="foto3.jpg" alt="foto3">
-          </div>
-          <div class="photoItem">
-            <div class="photoBadge">Foto 4 / 5</div>
-            <img src="foto4.jpg" alt="foto4">
-          </div>
-          <div class="photoItem">
-            <div class="photoBadge">Foto 5 / 5</div>
-            <img src="foto5.jpg" alt="foto5">
-          </div>
+          <div style="color:rgba(43,10,27,.62); font-weight:900; font-size:13px;">(Swipe juga bisa)</div>
         </div>
       </div>
 
       <div class="wave" aria-hidden="true">
         <svg viewBox="0 0 1440 220" preserveAspectRatio="none">
-          <path d="M0,110 C240,170 420,60 720,120 C1020,180 1200,90 1440,120 L1440,220 L0,220 Z"
-                fill="rgba(255,126,185,.32)"></path>
-          <path d="M0,130 C260,190 420,80 720,140 C1020,200 1200,110 1440,140 L1440,220 L0,220 Z"
-                fill="rgba(255,79,154,.18)"></path>
+          <path d="M0,110 C240,170 420,60 720,120 C1020,180 1200,90 1440,120 L1440,220 L0,220 Z" fill="rgba(255,126,185,.32)"></path>
+          <path d="M0,130 C260,190 420,80 720,140 C1020,200 1200,110 1440,140 L1440,220 L0,220 Z" fill="rgba(255,79,154,.18)"></path>
         </svg>
       </div>
     </div>
   </section>
 
-  <!-- NEW LAYER 6: SONGS (old layer 5) -->
+  <!-- LAYER 6: SONGS -->
   <section id="layer6" class="layer">
     <div class="card">
       <div class="sectionTitle">Songs that remind me of our memories 🎶</div>
@@ -896,7 +995,7 @@
     </div>
   </section>
 
-  <!-- NEW LAYER 7: WHY (old layer 6) -->
+  <!-- LAYER 7: WHY (scrollable) -->
   <section id="layer7" class="layer scrollable">
     <div class="card">
       <div class="sectionTitle">WHY YOU MATTER 💗</div>
@@ -942,10 +1041,9 @@
     </div>
   </section>
 
-  <!-- NEW LAYER 8: END (old layer 7) -->
+  <!-- LAYER 8: END -->
   <section id="layer8" class="layer">
     <div class="endWrap">
-      <h1 class="endTitleTop">Happy Valentine’s Day<br>Darling</h1>
 
       <div class="endCard">
         <div class="endInner">
@@ -1190,6 +1288,84 @@ Nanti aku beliin sapii limaa yaa 🐮🐮🐮🐮🐮
     popHeart(); popHeart();
   });
 
+  // ===== Layer 5 Photo slider =====
+  const photos = ["foto1.jpg","foto2.jpg","foto3.jpg","foto4.jpg","foto5.jpg"];
+  const photoBadge = document.getElementById("photoBadge");
+  const photoDots = document.getElementById("photoDots");
+  const photoPrev = document.getElementById("photoPrev");
+  const photoNext = document.getElementById("photoNext");
+  const photoFrame = document.getElementById("photoFrame");
+  const slideA = document.getElementById("slideA");
+  const slideB = document.getElementById("slideB");
+
+  let photoIdx = 0;
+  let showingA = true;
+
+  function renderPhotoDots(){
+    photoDots.innerHTML = "";
+    photos.forEach((_, i)=>{
+      const d = document.createElement("div");
+      d.className = "dot" + (i===photoIdx ? " active" : "");
+      d.addEventListener("click", ()=>{ goPhoto(i, i>photoIdx ? 1 : -1); });
+      photoDots.appendChild(d);
+    });
+  }
+  function setDotsActive(){
+    [...photoDots.children].forEach((d,i)=> d.classList.toggle("active", i===photoIdx));
+  }
+
+  function goPhoto(targetIdx, dir=1){
+    if(targetIdx === photoIdx) return;
+    photoIdx = (targetIdx + photos.length) % photos.length;
+
+    const incoming = showingA ? slideB : slideA;
+    const outgoing = showingA ? slideA : slideB;
+
+    outgoing.classList.remove("hideLeft","show");
+    if(dir < 0) outgoing.classList.add("hideLeft");
+
+    incoming.classList.remove("hideLeft");
+    incoming.src = photos[photoIdx] + "?v=" + Date.now();
+    incoming.classList.remove("show");
+    void incoming.offsetWidth;
+    incoming.classList.add("show");
+
+    showingA = !showingA;
+
+    photoBadge.textContent = `Foto ${photoIdx+1} / ${photos.length}`;
+    setDotsActive();
+    popHeart();
+  }
+
+  function nextPhoto(){ goPhoto((photoIdx+1)%photos.length, 1); }
+  function prevPhoto(){ goPhoto((photoIdx-1+photos.length)%photos.length, -1); }
+
+  photoNext.addEventListener("click", nextPhoto);
+  photoPrev.addEventListener("click", prevPhoto);
+
+  // swipe
+  let startX = null;
+  photoFrame.addEventListener("touchstart", (e)=>{ startX = e.touches[0].clientX; }, {passive:true});
+  photoFrame.addEventListener("touchend", (e)=>{
+    if(startX===null) return;
+    const endX = e.changedTouches[0].clientX;
+    const dx = endX - startX;
+    startX = null;
+    if(Math.abs(dx) > 40) (dx < 0) ? nextPhoto() : prevPhoto();
+  });
+
+  function initPhotoSlider(){
+    slideA.src = photos[0] + "?v=" + Date.now();
+    slideB.src = photos[1] + "?v=" + Date.now();
+    slideA.classList.add("show");
+    slideB.classList.remove("show");
+    photoIdx = 0;
+    showingA = true;
+    photoBadge.textContent = `Foto 1 / ${photos.length}`;
+    renderPhotoDots();
+  }
+  initPhotoSlider();
+
   // ===== Nav after split =====
   // Foto -> Songs
   document.getElementById("toSongsBtn").addEventListener("click", ()=> showLayer(6));
@@ -1214,22 +1390,54 @@ Nanti aku beliin sapii limaa yaa 🐮🐮🐮🐮🐮
   // ===== Songs =====
   const song1 = document.getElementById("song1");
   const song2 = document.getElementById("song2");
+
+  // nyimpen status: apakah bgm tadi lagi jalan sebelum lagu diputar
+  let resumeBgmAfterSong = false;
+
+  function pauseBgmForSong(){
+    // bgm + musicOn sudah ada di script kamu
+    resumeBgmAfterSong = (musicOn && bgm && !bgm.paused);
+    if(bgm && !bgm.paused) bgm.pause();
+  }
+
+  function resumeBgmAfterSongIfNeeded(){
+    if(resumeBgmAfterSong && bgm){
+      bgm.play().catch(()=>{});
+    }
+    resumeBgmAfterSong = false;
+  }
+
   function stopSongs(){
     song1.pause(); song2.pause();
     song1.currentTime = 0; song2.currentTime = 0;
+    resumeBgmAfterSongIfNeeded();
   }
+
+  // PLAY
   document.getElementById("song1Play").addEventListener("click", ()=>{
-    stopSongs(); song1.play().catch(()=>{});
-  });
-  document.getElementById("song1Stop").addEventListener("click", ()=>{
-    song1.pause(); song1.currentTime = 0;
+    stopSongs();
+    pauseBgmForSong();
+    song1.play().catch(()=>{});
   });
   document.getElementById("song2Play").addEventListener("click", ()=>{
-    stopSongs(); song2.play().catch(()=>{});
+    stopSongs();
+    pauseBgmForSong();
+    song2.play().catch(()=>{});
+  });
+
+  // STOP
+  document.getElementById("song1Stop").addEventListener("click", ()=>{
+    song1.pause(); song1.currentTime = 0;
+    resumeBgmAfterSongIfNeeded();
   });
   document.getElementById("song2Stop").addEventListener("click", ()=>{
     song2.pause(); song2.currentTime = 0;
+    resumeBgmAfterSongIfNeeded();
   });
+
+  // kalau lagu selesai sendiri, bgm nyala lagi
+  song1.addEventListener("ended", resumeBgmAfterSongIfNeeded);
+  song2.addEventListener("ended", resumeBgmAfterSongIfNeeded);
 
   // pop cards
   document.querySelectorAll("[data-pop]").forEach(card=>{
