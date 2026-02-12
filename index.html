@@ -59,11 +59,11 @@
       opacity:0; pointer-events:none;
       transform: translateY(10px);
       transition: opacity .28s ease, transform .28s ease;
-      z-index:1;
+      z-index:2; /* di atas hearts */
     }
     .layer.active{ opacity:1; pointer-events:auto; transform: translateY(0); }
 
-    /* ✅ Scroll fix (HP) */
+    /* Scroll fix (HP) */
     .layer.scrollable{
       place-items: start center;
       align-content: start;
@@ -187,9 +187,8 @@
       box-shadow: 0 12px 26px rgba(255,59,122,.22);
     }
 
-    /* ===== Layer 4 wide ===== */
-    .wideCard{ width:min(1040px, 96%); text-align:left; padding-bottom: 78px; }
-    /* ✅ biar gak kepotong di HP (scrollable) */
+    /* ===== NEW Layer 4: SURAT ONLY ===== */
+    .wideCard{ width:min(860px, 96%); text-align:left; padding-bottom: 78px; }
     #layer4.scrollable .wideCard{ max-height: calc(100vh - 28px); }
 
     .wideHead{
@@ -205,69 +204,12 @@
       text-shadow: 0 2px 0 rgba(255,255,255,.7);
       display:flex; align-items:center; gap:8px;
     }
-    .twoCol{
-      display:grid; grid-template-columns: 1fr 1fr;
-      gap: 16px; align-items: stretch;
-    }
-    @media (max-width: 920px){ .twoCol{ grid-template-columns: 1fr; } }
 
     .panel{
       border-radius: 22px;
       background: rgba(255,59,122,.06);
       border: 1px solid rgba(255,59,122,.14);
       padding: 14px;
-      height:100%;
-    }
-    .panelLeft{ display:flex; flex-direction:column; height:100%; gap:10px; }
-
-    .frame{
-      width:100%;
-      flex: 0 0 auto;
-      height: clamp(340px, 46vh, 520px);
-      border-radius: 18px;
-      overflow:hidden;
-      background: rgba(255,255,255,.55);
-      border: 1px solid rgba(255,59,122,.18);
-      position:relative;
-      display:flex; align-items:center; justify-content:center;
-      padding: 10px;
-    }
-    @media (max-width: 520px){
-      .frame{ height: min(44vh, 420px); }
-    }
-    .frame img{
-      width:100%; height:100%;
-      object-fit: contain;
-      object-position:center;
-      display:block;
-      border-radius: 14px;
-      background: rgba(255,255,255,.35);
-    }
-
-    .badge{
-      position:absolute; left:10px; top:10px;
-      background: rgba(0,0,0,.35); color:#fff;
-      padding: 6px 10px; border-radius: 999px;
-      font-size: 12px; font-weight: 900;
-      backdrop-filter: blur(6px);
-      font-family:"Baloo 2", system-ui;
-    }
-
-    .dots{ display:flex; gap:8px; justify-content:center; margin-top: 2px; }
-    .dot{
-      width:10px; height:10px; border-radius:999px;
-      background: rgba(255,59,122,.18);
-      border: 1px solid rgba(255,59,122,.22);
-      cursor:pointer;
-      transition: transform .12s ease, background .12s ease;
-    }
-    .dot.active{ background: rgba(255,59,122,.90); transform: scale(1.15); }
-
-    .navRow{
-      display:flex; gap:10px; flex-wrap:wrap;
-      justify-content:space-between; align-items:center;
-      margin-top: 6px;
-      font-family:"Baloo 2", system-ui;
     }
 
     .letterHeader{
@@ -286,10 +228,10 @@
 
     .letterBox{
       border-radius: 18px;
-      padding: 4px 14px 14px;
+      padding: 10px 14px 14px;
       background: rgba(255,255,255,.65);
       border: 1px dashed rgba(255,59,122,.30);
-      min-height: 220px;
+      min-height: 240px;
       white-space:pre-wrap;
       line-height:1.35;
       color: rgba(43,10,27,.92);
@@ -298,7 +240,14 @@
       font-size: 15px;
     }
     @media (max-width: 520px){
-      .letterBox{ min-height: 320px; }
+      .letterBox{ min-height: 240px; }
+    }
+
+    .navRow{
+      display:flex; gap:10px; flex-wrap:wrap;
+      justify-content:space-between; align-items:center;
+      margin-top: 10px;
+      font-family:"Baloo 2", system-ui;
     }
 
     .cursor{
@@ -309,49 +258,159 @@
       font-weight: 1100;
     }
     @keyframes blink{ 0%,50%{ opacity:1;} 51%,100%{ opacity:0;} }
-    /* === FIX LAYER 4 DI HP BIAR GA KEPOTONG === */
-    #layer4{
-      overflow-y: auto;
+
+    /* Envelope animation */
+    .envelopeStage{
+      display:grid;
+      justify-items:center;
+      gap: 12px;
+      padding: 8px 0 12px;
+    }
+    .envelopeHint{
+      font-family:"Baloo 2", system-ui;
+      font-weight: 900;
+      color: rgba(43,10,27,.62);
+      font-style: italic;
+      text-align:center;
+      margin: 0;
+    }
+    .envelopeWrap{
+      width: min(380px, 92%);
+      height: 190px;
+      position: relative;
+      border-radius: 18px;
+      display:grid;
+      place-items:center;
+    }
+    .env{
+      width: min(340px, 92%);
+      height: 170px;
+      position: relative;
+      filter: drop-shadow(0 14px 22px rgba(0,0,0,.12));
+    }
+    .env .back{
+      position:absolute; inset:0;
+      background: rgba(255,255,255,.92);
+      border: 2px solid rgba(255,59,122,.22);
+      border-radius: 18px;
+    }
+    .env .paper{
+      position:absolute;
+      left: 14px; right: 14px;
+      bottom: 18px;
+      height: 0;
+      background: rgba(255,255,255,.96);
+      border-radius: 12px;
+      border: 1px solid rgba(255,59,122,.18);
+      transform-origin: bottom;
+      overflow:hidden;
+    }
+    .env .paper::after{
+      content:"💌";
+      position:absolute;
+      right: 10px; top: 10px;
+      opacity: .35;
+      font-size: 22px;
+    }
+    .env .front{
+      position:absolute; inset:0;
+      border-radius: 18px;
+      overflow:hidden;
+    }
+    .env .front::before{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(255,59,122,.10), rgba(255,59,122,.03));
+      border: 2px solid rgba(255,59,122,.22);
+      border-radius: 18px;
+    }
+    .env .flap{
+      position:absolute;
+      left: 0; right:0;
+      top: -2px;
+      height: 54%;
+      background: linear-gradient(180deg, rgba(255,79,154,.32), rgba(255,79,154,.12));
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+      transform-origin: top;
+      transform: rotateX(0deg);
+      border-left: 2px solid rgba(255,59,122,.22);
+      border-right: 2px solid rgba(255,59,122,.22);
+      border-top: 2px solid rgba(255,59,122,.22);
+    }
+    .env .seal{
+      position:absolute;
+      left:50%; top: 52%;
+      transform: translate(-50%, -50%);
+      width: 42px; height: 42px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,59,122,.95), rgba(255,90,166,.95));
+      box-shadow: 0 10px 18px rgba(255,59,122,.24);
+      display:grid; place-items:center;
+      color:#fff;
+      font-family:"Baloo 2", system-ui;
+      font-weight: 1000;
+      border: 2px solid rgba(255,255,255,.55);
+    }
+    .env .seal::before{ content:"❤"; transform: translateY(-1px); }
+
+    .env.open .flap{ animation: flapOpen .55s ease forwards; }
+    .env.open .paper{ animation: paperUp .75s ease .15s forwards; }
+
+    @keyframes flapOpen{
+      0%{ transform: rotateX(0deg); }
+      100%{ transform: rotateX(170deg); }
+    }
+    @keyframes paperUp{
+      0%{ height: 0; }
+      100%{ height: 135px; }
+    }
+
+    .letterPanelHidden{ display:none; }
+    .letterPanelVisible{ display:block; }
+
+    /* ===== NEW Layer 5: FOTO SCROLL ===== */
+    #layer5.scrollable .wideCard{ max-height: calc(100vh - 28px); }
+
+    .photoScroll{
+      max-height: 66vh;
+      overflow-y:auto;
       -webkit-overflow-scrolling: touch;
+      padding-right: 4px;
+      margin-top: 10px;
+    }
+    @media (max-width: 520px){
+      .photoScroll{ max-height: 62vh; }
     }
 
-    #layer4 .wideCard{
-      max-height: calc(100vh - 24px);
+    .photoItem{
+      background: rgba(255,255,255,.68);
+      border: 1px solid rgba(255,59,122,.16);
+      border-radius: 18px;
+      padding: 10px;
+      margin-bottom: 12px;
+      position:relative;
     }
-    @media (max-width: 920px){
-    /* jadi 1 kolom */
-    #layer4 .twoCol{
-      grid-template-columns: 1fr !important;
+    .photoBadge{
+      position:absolute; left:10px; top:10px;
+      background: rgba(0,0,0,.35); color:#fff;
+      padding: 6px 10px; border-radius: 999px;
+      font-size: 12px; font-weight: 900;
+      backdrop-filter: blur(6px);
+      font-family:"Baloo 2", system-ui;
+    }
+    .photoItem img{
+      width:100%;
+      height: clamp(280px, 44vh, 520px);
+      object-fit: contain;
+      background: rgba(255,255,255,.40);
+      border-radius: 14px;
+      display:block;
+      border: 1px solid rgba(255,59,122,.12);
     }
 
-    /* rapetin padding card biar muat */
-    #layer4 .wideCard{
-      padding: 18px 14px 72px;
-    }
-
-    /* header jangan kegedean */
-    #layer4 .wideTitle{
-      font-size: 28px;
-    }
-
-    /* frame foto jangan kepanjangan, biar gak makan layar */
-    #layer4 .frame{
-      height: min(44vh, 420px);
-    }
-
-    /* surat jangan terlalu tinggi */
-    #layer4 .letterBox{
-      min-height: 200px;
-    }
-  }
-  @media (max-width: 920px){
-    #layer4 .letterBox{
-      max-height: 38vh;
-      overflow-y: auto;
-    }
-  }
-
-    /* ===== Layer 5 Songs ===== */
+    /* ===== Layer 6 Songs (old layer 5) ===== */
     .sectionTitle{
       font-family:"Baloo 2", system-ui;
       font-size: 28px;
@@ -416,13 +475,11 @@
       font-family:"Baloo 2", system-ui;
     }
 
-    /* ===== Layer 6 ===== */
-    /* ✅ layer 6 dibuat scroll & icon ga kepotong */
-    #layer6.scrollable .card{ max-height: calc(100vh - 28px); }
+    /* ===== Layer 7 (old layer 6) ===== */
+    #layer7.scrollable .card{ max-height: calc(100vh - 28px); }
 
     .whyWrap{ display:grid; gap: 14px; margin-top: 10px; padding-top: 18px; }
 
-    /* ✅ scroll khusus list pop-up */
     .whyScroll{
       max-height: 62vh;
       overflow-y:auto;
@@ -442,7 +499,7 @@
       background: rgba(255,255,255,.68);
       border: 2px solid rgba(255,255,255,.85);
       box-shadow: 0 10px 28px rgba(0,0,0,.10);
-      overflow: visible; /* ✅ biar icon ga ke-cut */
+      overflow: visible;
     }
     .whyIcon{
       width:56px; height:56px;
@@ -477,7 +534,7 @@
     .pop{ animation: pop .22s ease; }
     @keyframes pop{ from{ transform: scale(.98); } to{ transform: scale(1); } }
 
-    /* ===== Layer 7 ===== */
+    /* ===== Layer 8 (old layer 7) ===== */
     .endWrap{
       width:min(520px, 96%);
       display:grid;
@@ -566,19 +623,18 @@
       font-family:"Baloo 2", system-ui;
       box-shadow: 0 12px 28px rgba(255,59,122,.14);
     }
-
     .waveEnd{
       position:absolute; left:0; right:0; bottom:0;
       height:120px; pointer-events:none;
     }
 
-    /* Hearts float */
+    /* Hearts float (behind popup) */
     .heart{
       position:fixed; left:0; top:0;
       font-size:18px; opacity:0;
       pointer-events:none;
       animation: floatUp linear forwards;
-      z-index:2;
+      z-index:1; /* di belakang layer */
       font-family:"Baloo 2", system-ui;
     }
     @keyframes floatUp{
@@ -674,38 +730,37 @@
     </div>
   </section>
 
-  <!-- ✅ LAYER 4 (scrollable) -->
+  <!-- NEW LAYER 4: SURAT (scrollable) -->
   <section id="layer4" class="layer scrollable">
     <div class="card wideCard">
       <div class="wideHead">
-        <h2 class="wideTitle">Kenangan & Surat <span aria-hidden="true">💗</span></h2>
+        <h2 class="wideTitle">Surat untuk Nadila <span aria-hidden="true">💌</span></h2>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <button id="musicBtn" class="ghostBtn">🔇 Musik</button>
-          <button id="toSongsBtn" class="primaryBtn">Continue ➜ 🎵</button>
+          <button id="toPhotosBtn" class="primaryBtn">Lihat Foto ➜ 📸</button>
         </div>
       </div>
 
-      <div class="twoCol">
-        <div class="panel panelLeft">
-          <div class="frame">
-            <span class="badge" id="badge">Foto 1 / 5</span>
-            <img id="slideImg" src="foto1.jpg" alt="slide">
-          </div>
-
-          <div class="dots" id="dots"></div>
-
-          <div class="navRow">
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <button id="prevBtn" class="ghostBtn">⬅️ Prev</button>
-              <button id="nextBtn" class="ghostBtn">Next ➡️</button>
-            </div>
-            <div style="color:rgba(43,10,27,.62); font-weight:900; font-size:13px;">
-              (HP bisa swipe kiri/kanan)
+      <div class="panel">
+        <!-- Envelope stage -->
+        <div class="envelopeStage" id="envelopeStage">
+          <div class="envelopeWrap">
+            <div class="env" id="env">
+              <div class="back"></div>
+              <div class="paper"></div>
+              <div class="front"></div>
+              <div class="flap"></div>
+              <div class="seal"></div>
             </div>
           </div>
+          <p class="envelopeHint">Klik “Buka Surat” ya sayangkuu ✨</p>
+          <button id="openLetterBtn" class="primaryBtn" style="width:min(340px,92%); padding:16px 18px; font-size:18px;">
+            Buka Surat 💗
+          </button>
         </div>
 
-        <div class="panel">
+        <!-- Letter panel -->
+        <div id="letterPanel" class="letterPanelHidden">
           <div class="letterHeader">
             <img src="love_left.gif" alt="love left">
             <h3 class="letterHeaderTitle">Hai Nadila sayangku</h3>
@@ -720,9 +775,10 @@
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
               <button id="replayBtn" class="ghostBtn">Ulangi ketik ✍️</button>
               <button id="speedBtn" class="ghostBtn">Speed: Normal</button>
+              <button id="finishBtn" class="ghostBtn">Tampilkan semua ⚡</button>
             </div>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <button id="finishBtn" class="ghostBtn">Tampilkan semua ⚡</button>
+              <button id="backToPopBtn" class="ghostBtn">⬅️ Kembali</button>
             </div>
           </div>
         </div>
@@ -739,8 +795,59 @@
     </div>
   </section>
 
-  <!-- LAYER 5 -->
-  <section id="layer5" class="layer">
+  <!-- NEW LAYER 5: FOTO POPUP SCROLL (scrollable) -->
+  <section id="layer5" class="layer scrollable">
+    <div class="card wideCard">
+      <div class="wideHead">
+        <h2 class="wideTitle">Kenangan Foto <span aria-hidden="true">📸</span></h2>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="photosBackToLetter" class="ghostBtn">⬅️ Surat</button>
+          <button id="toSongsBtn" class="primaryBtn">Continue ➜ 🎵</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div style="font-family:'Baloo 2',system-ui; font-weight:900; color:rgba(43,10,27,.62); font-style:italic; text-align:center;">
+          Scroll ke bawah ya sayangkuu 💞
+        </div>
+
+        <div class="photoScroll">
+          <div class="photoItem">
+            <div class="photoBadge">Foto 1 / 5</div>
+            <img src="foto1.jpg" alt="foto1">
+          </div>
+          <div class="photoItem">
+            <div class="photoBadge">Foto 2 / 5</div>
+            <img src="foto2.jpg" alt="foto2">
+          </div>
+          <div class="photoItem">
+            <div class="photoBadge">Foto 3 / 5</div>
+            <img src="foto3.jpg" alt="foto3">
+          </div>
+          <div class="photoItem">
+            <div class="photoBadge">Foto 4 / 5</div>
+            <img src="foto4.jpg" alt="foto4">
+          </div>
+          <div class="photoItem">
+            <div class="photoBadge">Foto 5 / 5</div>
+            <img src="foto5.jpg" alt="foto5">
+          </div>
+        </div>
+      </div>
+
+      <div class="wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 220" preserveAspectRatio="none">
+          <path d="M0,110 C240,170 420,60 720,120 C1020,180 1200,90 1440,120 L1440,220 L0,220 Z"
+                fill="rgba(255,126,185,.32)"></path>
+          <path d="M0,130 C260,190 420,80 720,140 C1020,200 1200,110 1440,140 L1440,220 L0,220 Z"
+                fill="rgba(255,79,154,.18)"></path>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW LAYER 6: SONGS (old layer 5) -->
+  <section id="layer6" class="layer">
     <div class="card">
       <div class="sectionTitle">Songs that remind me of our memories 🎶</div>
 
@@ -789,8 +896,8 @@
     </div>
   </section>
 
-  <!-- ✅ LAYER 6 (scrollable + scroll khusus list) -->
-  <section id="layer6" class="layer scrollable">
+  <!-- NEW LAYER 7: WHY (old layer 6) -->
+  <section id="layer7" class="layer scrollable">
     <div class="card">
       <div class="sectionTitle">WHY YOU MATTER 💗</div>
       <div style="text-align:center; color:rgba(43,10,27,.58); font-weight:900; font-style:italic; margin-top:-8px; font-family:'Baloo 2',system-ui;">
@@ -835,8 +942,8 @@
     </div>
   </section>
 
-  <!-- LAYER 7 -->
-  <section id="layer7" class="layer">
+  <!-- NEW LAYER 8: END (old layer 7) -->
+  <section id="layer8" class="layer">
     <div class="endWrap">
       <h1 class="endTitleTop">Happy Valentine’s Day<br>Darling</h1>
 
@@ -871,19 +978,20 @@
     1: document.getElementById("layer1"),
     2: document.getElementById("layer2"),
     3: document.getElementById("layer3"),
-    4: document.getElementById("layer4"),
-    5: document.getElementById("layer5"),
-    6: document.getElementById("layer6"),
-    7: document.getElementById("layer7"),
+    4: document.getElementById("layer4"), // SURAT
+    5: document.getElementById("layer5"), // FOTO
+    6: document.getElementById("layer6"), // SONGS
+    7: document.getElementById("layer7"), // WHY
+    8: document.getElementById("layer8"), // END
   };
+
   function showLayer(n){
     Object.values(layers).forEach(l => l.classList.remove("active"));
     layers[n].classList.add("active");
     window.scrollTo({ top: 0, behavior: "instant" });
   }
 
-  const photos = ["foto1.jpg","foto2.jpg","foto3.jpg","foto4.jpg","foto5.jpg"];
-
+  // Buttons layer 1
   const yesBtn = document.getElementById("yesBtn");
   const noBtn  = document.getElementById("noBtn");
   const btnArea = document.getElementById("btnArea");
@@ -922,7 +1030,7 @@
   musicBtn?.addEventListener("click", toggleMusic);
   window.addEventListener("click", ()=>{ if(!musicOn) startMusic(); }, { once:true });
 
-  // Hearts
+  // Hearts (behind popup)
   const heartEmojis = ["💗","💖","💘","💞","🫶","🥰"];
   function popHeart(){
     const el = document.createElement("div");
@@ -954,56 +1062,63 @@
   // 3 -> 4
   document.getElementById("openBtn").addEventListener("click", ()=>{
     showLayer(4);
-    renderDots();
-    updateSlide(false);
-    startTyping(true);
+    resetLetterUI();
     syncMusicBtn();
     popHeart(); popHeart();
   });
 
-  // Layer 4 slider
-  const slideImg = document.getElementById("slideImg");
-  const badge = document.getElementById("badge");
-  const dotsWrap = document.getElementById("dots");
-  const prevBtn = document.getElementById("prevBtn");
-  const nextBtn = document.getElementById("nextBtn");
+  // ===== Layer 4 (Surat) =====
+  const env = document.getElementById("env");
+  const envelopeStage = document.getElementById("envelopeStage");
+  const openLetterBtn = document.getElementById("openLetterBtn");
+  const letterPanel = document.getElementById("letterPanel");
+  const backToPopBtn = document.getElementById("backToPopBtn");
 
-  let idx = 0;
+  function resetLetterUI(){
+    // reset envelope state
+    env.classList.remove("open");
+    envelopeStage.style.display = "grid";
+    letterPanel.className = "letterPanelHidden";
 
-  function renderDots(){
-    dotsWrap.innerHTML = "";
-    photos.forEach((_, i)=>{
-      const d = document.createElement("div");
-      d.className = "dot" + (i===idx ? " active" : "");
-      d.addEventListener("click", ()=>{ idx=i; updateSlide(true); });
-      dotsWrap.appendChild(d);
-    });
+    // reset typing
+    stopTyping();
+    typedText.textContent = "";
+    typingIndex = 0;
+    cursor.style.display = "inline-block";
+    setSpeed(speedMode); // keep current label
   }
-  function updateSlide(withHeart=false){
-  // anti cache biar foto selalu muncul
-  slideImg.src = photos[idx] + "?v=" + Date.now();
 
-  badge.textContent = `Foto ${idx+1} / ${photos.length}`;
-  [...dotsWrap.children].forEach((d,i)=> d.classList.toggle("active", i===idx));
-  if(withHeart) popHeart();
+  function showLetterAfterOpen(){
+    envelopeStage.style.display = "none";
+    letterPanel.className = "letterPanelVisible";
+    startTyping(true);
+    popHeart(); popHeart();
   }
-  function next(){ idx = (idx+1) % photos.length; updateSlide(true); }
-  function prev(){ idx = (idx-1+photos.length) % photos.length; updateSlide(true); }
 
-  nextBtn.addEventListener("click", next);
-  prevBtn.addEventListener("click", prev);
-
-  let startX = null;
-  slideImg.addEventListener("touchstart", (e)=>{ startX = e.touches[0].clientX; }, {passive:true});
-  slideImg.addEventListener("touchend", (e)=>{
-    if(startX===null) return;
-    const endX = e.changedTouches[0].clientX;
-    const dx = endX - startX;
-    startX = null;
-    if(Math.abs(dx) > 40) (dx < 0) ? next() : prev();
+  openLetterBtn.addEventListener("click", ()=>{
+    env.classList.add("open");
+    popHeart();
+    setTimeout(showLetterAfterOpen, 850);
   });
 
-  // Typewriter
+  // Optional: tap seal/envelope also opens
+  env.addEventListener("click", ()=>{
+    if(env.classList.contains("open")) return;
+    openLetterBtn.click();
+  });
+
+  backToPopBtn.addEventListener("click", ()=>{
+    // balik ke stage amplop (bukan keluar layer)
+    resetLetterUI();
+    popHeart();
+  });
+
+  // Surat -> Foto
+  document.getElementById("toPhotosBtn").addEventListener("click", ()=> showLayer(5));
+  // Foto -> Surat
+  document.getElementById("photosBackToLetter").addEventListener("click", ()=> showLayer(4));
+
+  // ===== Typewriter (same message) =====
   const typedText = document.getElementById("typedText");
   const cursor = document.getElementById("cursor");
   const replayBtn = document.getElementById("replayBtn");
@@ -1075,14 +1190,19 @@ Nanti aku beliin sapii limaa yaa 🐮🐮🐮🐮🐮
     popHeart(); popHeart();
   });
 
-  // Nav
-  document.getElementById("toSongsBtn").addEventListener("click", ()=> showLayer(5));
-  document.getElementById("songsBack").addEventListener("click", ()=> showLayer(4));
-  document.getElementById("toWhyBtn").addEventListener("click", ()=> showLayer(6));
-  document.getElementById("whyBack").addEventListener("click", ()=> showLayer(5));
-  document.getElementById("toEndBtn").addEventListener("click", ()=> showLayer(7));
+  // ===== Nav after split =====
+  // Foto -> Songs
+  document.getElementById("toSongsBtn").addEventListener("click", ()=> showLayer(6));
+  // Songs back -> Foto
+  document.getElementById("songsBack").addEventListener("click", ()=> showLayer(5));
+  // Songs -> Why
+  document.getElementById("toWhyBtn").addEventListener("click", ()=> showLayer(7));
+  // Why back -> Songs
+  document.getElementById("whyBack").addEventListener("click", ()=> showLayer(6));
+  // Why -> End
+  document.getElementById("toEndBtn").addEventListener("click", ()=> showLayer(8));
 
-  // Layer 7 date + see again
+  // ===== Layer 8 date + see again =====
   const endDate = document.getElementById("endDate");
   const now = new Date();
   endDate.textContent = now.toLocaleDateString("en-US", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
@@ -1091,7 +1211,7 @@ Nanti aku beliin sapii limaa yaa 🐮🐮🐮🐮🐮
     showLayer(1);
   });
 
-  // Songs
+  // ===== Songs =====
   const song1 = document.getElementById("song1");
   const song2 = document.getElementById("song2");
   function stopSongs(){
@@ -1123,9 +1243,3 @@ Nanti aku beliin sapii limaa yaa 🐮🐮🐮🐮🐮
 </script>
 </body>
 </html>
-
-
-
-
-
-
