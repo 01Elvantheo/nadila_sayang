@@ -285,33 +285,40 @@
 
     .navRow{
       display:flex;
-      gap:8px;
+      gap:10px;
       justify-content:space-between;
       align-items:center;
-      flex-wrap:nowrap;     /* desktop: 1 baris */
+      flex-wrap:wrap;     /* desktop: 1 baris */
     }
 
     /* tombol kecil */
-    #layer4 .smallBtn{
-      padding:8px 10px;
-      border-radius:12px;
-      font-size:12px;
-      font-weight:900;
-      white-space:nowrap;
+    #layer4 .navBtnL4{
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.1;
+      white-space: nowrap;
     }
 
     /* ===== HP: FIT ke layar (boleh 2 baris & tombol jadi fleksibel) ===== */
-    @media (max-width: 420px){
-      #layer4 .navRow{
-        flex-wrap:wrap;          /* boleh turun baris */
-        justify-content:center;  /* biar rapi */
+    @media (max-width: 480px){
+      #layer4 .navRowL4{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        justify-items: stretch;
+        align-items: stretch;
       }
-
-      #layer4 .navRow .smallBtn{
-        flex: 1 1 calc(50% - 8px);  /* 2 kolom */
-        max-width: 170px;           /* biar gak kepanjangan */
+      #layer4 .navBtnL4{
+        width: 100%;
+        padding: 10px 10px;
+        font-size: 12px;
+        white-space: normal;       /* biar boleh turun 2 baris */
         text-align:center;
-        padding:10px 10px;          /* sedikit lebih enak dipencet */
+      }
+      /* tombol kembali full lebar */
+      #layer4 .navBackL4{
+        grid-column: 1 / -1;
       }
     }
 
@@ -946,11 +953,11 @@
             <span id="typedText"></span><span id="cursor" class="cursor">|</span>
           </div>
 
-          <div class="navRow">
-            <button id="replayBtn" class="ghostBtn">Ulangi ketik ✍️</button>
-            <button id="speedBtn" class="ghostBtn">Speed: Normal</button>
-            <button id="finishBtn" class="ghostBtn">Tampilkan semua ⚡</button>
-            <button id="backToPopBtn" class="ghostBtn">⬅️ Kembali</button>
+          <div class="navRow navRowL4">
+            <button id="replayBtn" class="ghostBtn navBtnL4">Ulangi ketik ✍️</button>
+            <button id="speedBtn" class="ghostBtn navBtnL4">Speed: Normal</button>
+            <button id="finishBtn" class="ghostBtn navBtnL4">Tampilkan semua ⚡</button>
+            <button id="backToPopBtn" class="ghostBtn navBtnL4 navBackL4">⬅️ Kembali</button>
           </div>
         </div>
       </div>
