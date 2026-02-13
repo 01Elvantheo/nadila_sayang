@@ -284,11 +284,35 @@
     }
 
     .navRow{
-      display:flex; gap:10px; flex-wrap:wrap;
-      justify-content:space-between; align-items:center;
-      margin-top: 10px;
-      font-family:"Baloo 2", system-ui;
-      flex: 0 0 auto;
+      display:flex;
+      gap:8px;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:nowrap;     /* desktop: 1 baris */
+    }
+
+    /* tombol kecil */
+    #layer4 .smallBtn{
+      padding:8px 10px;
+      border-radius:12px;
+      font-size:12px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    /* ===== HP: FIT ke layar (boleh 2 baris & tombol jadi fleksibel) ===== */
+    @media (max-width: 420px){
+      #layer4 .navRow{
+        flex-wrap:wrap;          /* boleh turun baris */
+        justify-content:center;  /* biar rapi */
+      }
+
+      #layer4 .navRow .smallBtn{
+        flex: 1 1 calc(50% - 8px);  /* 2 kolom */
+        max-width: 170px;           /* biar gak kepanjangan */
+        text-align:center;
+        padding:10px 10px;          /* sedikit lebih enak dipencet */
+      }
     }
 
     .cursor{
@@ -560,6 +584,49 @@
       color: rgba(43,10,27,.92);
       white-space:nowrap;
       font-family:"Baloo 2", system-ui;
+    }
+    /* Spotify block */
+    .spotifyBlock{
+      margin-top: 2px;
+      display:grid;
+      justify-items:center;
+      gap: 8px;
+    }
+
+    .spotifyBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+
+      width: min(420px, 92%);
+      padding: 14px 18px;
+      border-radius: 999px;
+
+      font-family:"Baloo 2", system-ui;
+      font-weight: 1000;
+      border:none;
+      cursor:pointer;
+      color:#fff;
+
+      background: linear-gradient(90deg, #1DB954, #1ed760);
+      box-shadow: 0 12px 26px rgba(29,185,84,.22);
+    }
+
+    .spotifyBtn:active{ transform: translateY(1px) scale(.99); }
+
+    .spotifyHint{
+      font-family:"Baloo 2", system-ui;
+      font-weight: 900;
+      font-style: italic;
+      color: rgba(43,10,27,.55);
+      text-align:center;
+      font-size: 13px;
+    }
+
+    .spotifyLogo{
+      display:inline-flex;
+      width:20px; height:20px;
     }
     @media (max-width: 460px){
       .songCard{
@@ -880,14 +947,10 @@
           </div>
 
           <div class="navRow">
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <button id="replayBtn" class="ghostBtn">Ulangi ketik ✍️</button>
-              <button id="speedBtn" class="ghostBtn">Speed: Normal</button>
-              <button id="finishBtn" class="ghostBtn">Tampilkan semua ⚡</button>
-            </div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <button id="backToPopBtn" class="ghostBtn">⬅️ Kembali</button>
-            </div>
+            <button id="replayBtn" class="ghostBtn">Ulangi ketik ✍️</button>
+            <button id="speedBtn" class="ghostBtn">Speed: Normal</button>
+            <button id="finishBtn" class="ghostBtn">Tampilkan semua ⚡</button>
+            <button id="backToPopBtn" class="ghostBtn">⬅️ Kembali</button>
           </div>
         </div>
       </div>
@@ -945,8 +1008,8 @@
     </div>
   </section>
 
-  <!-- LAYER 6: SONGS -->
-  <section id="layer6" class="layer">
+  <!-- LAYER 6: SONGS (scrollable) -->
+  <section id="layer6" class="layer scrollable">
     <div class="card">
       <div class="sectionTitle">Songs that remind me of our memories 🎶</div>
 
@@ -973,6 +1036,20 @@
             <button class="miniBtn" id="song2Play">▶️ Play</button>
             <button class="miniBtn" id="song2Stop">⏹ Stop</button>
           </div>
+        </div>
+
+        <!-- Spotify playlist button -->
+        <div class="spotifyBlock">
+          <button class="spotifyBtn" id="spotifyOpenBtn" type="button">
+            <span class="spotifyLogo" aria-hidden="true">
+              <svg viewBox="0 0 168 168" width="20" height="20">
+                <circle cx="84" cy="84" r="84" fill="#1DB954"></circle>
+                <path fill="#fff" d="M119 117c-2 3-6 4-9 2-25-15-56-18-92-9-4 1-8-1-9-5-1-4 1-8 5-9 39-10 74-6 104 11 3 2 4 6 1 10zM129 91c-2 3-7 4-10 2-29-18-74-23-109-11-4 1-9-1-10-6-1-4 1-9 6-10 40-13 90-8 123 12 3 2 4 7 2 13zM131 63c-35-21-92-23-125-12-5 2-11-1-13-6-2-5 1-11 6-13 38-12 102-9 144 14 5 3 7 9 4 14-3 5-9 7-16 3z"></path>
+              </svg>
+            </span>
+            <span>Buka Playlist Spotify</span>
+          </button>
+          <div class="spotifyHint">Klik biar langsung kebuka di app Spotify 💚</div>
         </div>
       </div>
 
@@ -1390,6 +1467,25 @@ Nanti aku beliin sapii limaa yaa 🐮🐮🐮🐮🐮
   // ===== Songs =====
   const song1 = document.getElementById("song1");
   const song2 = document.getElementById("song2");
+
+  // ===== Spotify Open App (Layer 6) =====
+  const spotifyOpenBtn = document.getElementById("spotifyOpenBtn");
+  spotifyOpenBtn?.addEventListener("click", ()=>{
+
+    // Web URL (bersih)
+    const webURL = "https://open.spotify.com/playlist/4SVNttHR9DCh7xUqhrgrxP";
+    // Deep link app
+    const appURL = "spotify:playlist:4SVNttHR9DCh7xUqhrgrxP";
+
+    // Coba buka app dulu
+    window.location.href = appURL;
+
+    // Fallback kalau app tidak kebuka
+    setTimeout(()=>{
+      window.open(webURL, "_blank", "noopener,noreferrer");
+    }, 900);
+
+  });
 
   // nyimpen status: apakah bgm tadi lagi jalan sebelum lagu diputar
   let resumeBgmAfterSong = false;
