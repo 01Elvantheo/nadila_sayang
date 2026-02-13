@@ -264,7 +264,6 @@
       padding: 10px 14px 14px;
       background: rgba(255,255,255,.65);
       border: 1px dashed rgba(255,59,122,.30);
-      white-space:pre-wrap;
       line-height:1.35;
       color: rgba(43,10,27,.92);
       font-weight: 800;
@@ -275,12 +274,15 @@
       flex: none;
       height: clamp(220px, 36svh, 360px);
       overflow-y:auto;
+      overflow-x:auto;
       -webkit-overflow-scrolling: touch;
 
       /* biar scroll ga “tembus” ke luar */
       overscroll-behavior: contain;
-      touch-action: pan-y;
+      touch-action: pan-y pan-x;
       scrollbar-gutter: stable;
+      white-space: pre;
+      word-break: normal;
     }
 
     .navRow{
